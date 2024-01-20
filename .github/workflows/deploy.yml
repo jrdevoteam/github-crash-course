@@ -11,6 +11,8 @@ jobs:
       - name: Get code
         uses: actions/checkout@v3
       - name: Load and cache dependencies
+        with:
+          caching: "false"
         uses: ./.github/actions/cached-deps
 
   test:
