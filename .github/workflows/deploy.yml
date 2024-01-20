@@ -11,9 +11,12 @@ jobs:
       - name: Get code
         uses: actions/checkout@v3
       - name: Load and cache dependencies
+        id: cached
         with:
           caching: 'false'
         uses: ./.github/actions/cached-deps
+      - name: Output info
+        run: echo "Cached used? ${{ steps.cached.outputs.used-cache}}"
 
   test:
     runs-on: ubuntu-latest
