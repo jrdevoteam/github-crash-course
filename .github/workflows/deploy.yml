@@ -1,8 +1,8 @@
-name: Website Deployment
+name: Deployment
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -13,9 +13,10 @@ jobs:
         id: cache
         uses: actions/cache@v3
         with:
-          path: ~/.npm
+          path: node_modules
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Lint code
         run: npm run lint
@@ -28,15 +29,16 @@ jobs:
         id: cache
         uses: actions/cache@v3
         with:
-          path: ~/.npm
+          path: node_modules
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Test code
         id: run-tests
         run: npm run test
       - name: Upload test report
-        if: ${{ failure() }} && ${{ steps.run-tests.outcome }} == 'failure'
+        if: failure() && steps.run-tests.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: test-report
@@ -51,12 +53,12 @@ jobs:
         id: cache
         uses: actions/cache@v3
         with:
-          path: ~/.npm
+          path: node_modules
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Build website
-        id: build-website
         run: npm run build
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
@@ -67,11 +69,14 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Get code
+        uses: actions/checkout@v3
       - name: Get build artifacts
         uses: actions/download-artifact@v3
         with:
           name: dist-files
+          path: ./dist
       - name: Output contents
         run: ls
-      - name: Deploy
+      - name: Deploy site
         run: echo "Deploying..."
