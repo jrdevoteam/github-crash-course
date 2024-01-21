@@ -1,5 +1,16 @@
 name: "Deploy to S3"
 description: "Deploy to S3 bla bla bla"
+inputs:
+  bucket:
+    description: "S3 bucket name"
+    required: true
+  bucket-region:
+    description: "Region"
+    required: false
+    default: "planet-earth"
+  dist-folder:
+    description: "distribution folder"
+    required: true
 runs:
   using: "node16"
   main: "main.js"
