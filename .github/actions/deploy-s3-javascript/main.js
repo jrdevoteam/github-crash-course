@@ -9,6 +9,8 @@ function run() {
 
     core.notice("Hello from custom JS!!!");
     core.notice('bucket: ${bucket}, bucket-region: ${bucketRegion}, dist-folder: ${distFolder}');
+    core.notice('bucket: ' + bucket + ', bucket-region: ' + bucketRegion + ', dist-folder: ' + distFolder);
+
 }
 
 run();
